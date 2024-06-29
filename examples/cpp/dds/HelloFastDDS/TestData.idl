@@ -1,4 +1,4 @@
-struct StudentInfo
+struct SimpleInfo
 {
 	unsigned long id;
 	string name;

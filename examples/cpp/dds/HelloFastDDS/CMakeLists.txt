@@ -14,7 +14,7 @@
 
 cmake_minimum_required(VERSION 3.20)
 
-project(HelloStudent VERSION 1 LANGUAGES CXX)
+project(HelloFastDDS VERSION 1 LANGUAGES CXX)
 
 # Find requirements
 if(NOT fastcdr_FOUND)
@@ -38,11 +38,13 @@ message(STATUS "Configuring HelloWorld example...")
 file(GLOB HELLOSTUDENT_SOURCES_CXX "*.cxx")
 file(GLOB HELLOSTUDENT_SOURCES_CPP "*.cpp")
 
-add_executable(HelloStudent ${HELLOSTUDENT_SOURCES_CXX} ${HELLOSTUDENT_SOURCES_CPP})
-target_compile_definitions(HelloStudent PRIVATE
+set(TARGET HelloFastDDS)
+
+add_executable(${TARGET} ${HELLOSTUDENT_SOURCES_CXX} ${HELLOSTUDENT_SOURCES_CPP})
+target_compile_definitions(${TARGET} PRIVATE
     $<$<AND:$<NOT:$<BOOL:${WIN32}>>,$<STREQUAL:"${CMAKE_BUILD_TYPE}","Debug">>:__DEBUG>
     $<$<BOOL:${INTERNAL_DEBUG}>:__INTERNALDEBUG> # Internal debug activated.
 )
-target_link_libraries(HelloStudent fastrtps fastcdr fastdds::optionparser)
-install(TARGETS HelloStudent
+target_link_libraries(${TARGET} fastrtps fastcdr fastdds::optionparser)
+install(TARGETS ${TARGET}
     RUNTIME DESTINATION examples/${BIN_INSTALL_DIR})

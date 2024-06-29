@@ -13,29 +13,28 @@
 // limitations under the License.
 
 /**
- * @file Subscriber.h
+ * @file DDSSubscriber.h
  *
  */
 
-#ifndef Subscriber_H_
-#define Subscriber_H_
+#pragma once
 
-#include "StudentDataPubSubTypes.h"
+#include "TestDataPubSubTypes.h"
 
 #include <fastdds/dds/domain/DomainParticipant.hpp>
 #include <fastdds/dds/subscriber/DataReaderListener.hpp>
 #include <fastrtps/subscriber/SampleInfo.h>
 #include <fastdds/dds/core/status/SubscriptionMatchedStatus.hpp>
 
-namespace student
+namespace learning_dds
 {
 
-    class Subscriber
+    class DDSSubscriber
     {
     public:
-        Subscriber();
+        DDSSubscriber();
 
-        virtual ~Subscriber();
+        virtual ~DDSSubscriber();
 
         //! Initialize the subscriber
         bool init(
@@ -82,7 +81,7 @@ namespace student
             //     eprosima::fastdds::dds::DataReader *reader,
             //     const eprosima::fastrtps::RequestedDeadlineMissedStatus &status) override;
 
-            StudentInfo hello_;
+            SimpleInfo hello_;
 
             int matched_;
 
@@ -92,4 +91,3 @@ namespace student
 
 }
 
-#endif /* Subscriber_H_ */

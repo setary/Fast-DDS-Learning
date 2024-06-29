@@ -13,11 +13,11 @@
 // limitations under the License.
 
 /**
- * @file Publisher.cpp
+ * @file DDSPublisher.cpp
  *
  */
 
-#include "Publisher.h"
+#include "DDSPublisher.h"
 #include <fastrtps/attributes/ParticipantAttributes.h>
 #include <fastrtps/attributes/PublisherAttributes.h>
 #include <fastdds/dds/domain/DomainParticipantFactory.hpp>
@@ -30,19 +30,19 @@
 
 using namespace eprosima::fastdds::dds;
 
-namespace student
+namespace learning_dds
 {
 
-    Publisher::Publisher()
-        : participant_(nullptr), publisher_(nullptr), topic_(nullptr), writer_(nullptr), type_(new StudentInfoPubSubType())
+    DDSPublisher::DDSPublisher()
+        : participant_(nullptr), publisher_(nullptr), topic_(nullptr), writer_(nullptr), type_(new SimpleInfoPubSubType())
     {
     }
 
-    bool Publisher::init(
+    bool DDSPublisher::init(
         bool use_env)
     {
         hello_.id(0);
-        hello_.name("StudentInfo");
+        hello_.name("SimpleInfo");
         DomainParticipantQos pqos = PARTICIPANT_QOS_DEFAULT;
         pqos.name("Participant_pub");
         auto factory = DomainParticipantFactory::get_instance();
@@ -89,8 +89,8 @@ namespace student
         }
 
         topic_ = participant_->create_topic(
-            "StudentInfoTopic",
-            "StudentInfo",
+            "SimpleInfoTopic",
+            "SimpleInfo",
             tqos);
 
         if (topic_ == nullptr)
@@ -124,7 +124,7 @@ namespace student
         return true;
     }
 
-    Publisher::~Publisher()
+    DDSPublisher::~DDSPublisher()
     {
         if (writer_ != nullptr)
         {
@@ -141,7 +141,7 @@ namespace student
         DomainParticipantFactory::get_instance()->delete_participant(participant_);
     }
 
-    void Publisher::PubListener::on_publication_matched(
+    void DDSPublisher::PubListener::on_publication_matched(
         eprosima::fastdds::dds::DataWriter *,
         const eprosima::fastdds::dds::PublicationMatchedStatus &info)
     {
@@ -149,12 +149,12 @@ namespace student
         {
             matched_ = info.total_count;
             firstConnected_ = true;
-            std::cout << "Publisher matched." << std::endl;
+            std::cout << "DDSPublisher matched." << std::endl;
         }
         else if (info.current_count_change == -1)
         {
             matched_ = info.total_count;
-            std::cout << "Publisher unmatched." << std::endl;
+            std::cout << "DDSPublisher unmatched." << std::endl;
         }
         else
         {
@@ -163,7 +163,7 @@ namespace student
         }
     }
 
-    void Publisher::runThread(uint32_t sleep)
+    void DDSPublisher::runThread(uint32_t sleep)
     {
         while (1)
         {
@@ -176,13 +176,13 @@ namespace student
         }
     }
 
-    void Publisher::run(uint32_t sleep)
+    void DDSPublisher::run(uint32_t sleep)
     {
-        std::thread thread(&Publisher::runThread, this, sleep);
+        std::thread thread(&DDSPublisher::runThread, this, sleep);
         thread.join();
     }
 
-    bool Publisher::publish(
+    bool DDSPublisher::publish(
         bool waitForListener)
     {
         if (listener_.firstConnected_ || !waitForListener || listener_.matched_ > 0)

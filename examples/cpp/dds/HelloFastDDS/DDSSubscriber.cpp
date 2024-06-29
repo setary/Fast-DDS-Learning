@@ -13,11 +13,11 @@
 // limitations under the License.
 
 /**
- * @file Subscriber.cpp
+ * @file DDSDDSDDSSubscriber.cpp
  *
  */
 
-#include "Subscriber.h"
+#include "DDSSubscriber.h"
 
 #include <chrono>
 #include <thread>
@@ -32,15 +32,15 @@
 
 using namespace eprosima::fastdds::dds;
 
-namespace student
+namespace learning_dds
 {
 
-    Subscriber::Subscriber()
-        : participant_(nullptr), subscriber_(nullptr), topic_(nullptr), reader_(nullptr), type_(new StudentInfoPubSubType())
+    DDSSubscriber::DDSSubscriber()
+        : participant_(nullptr), subscriber_(nullptr), topic_(nullptr), reader_(nullptr), type_(new SimpleInfoPubSubType())
     {
     }
 
-    bool Subscriber::init(
+    bool DDSSubscriber::init(
         bool use_env)
     {
         DomainParticipantQos pqos = PARTICIPANT_QOS_DEFAULT;
@@ -87,8 +87,8 @@ namespace student
         }
 
         topic_ = participant_->create_topic(
-            "StudentInfoTopic",
-            "StudentInfo",
+            "SimpleInfoTopic",
+            "SimpleInfo",
             tqos);
 
         if (topic_ == nullptr)
@@ -116,7 +116,7 @@ namespace student
         return true;
     }
 
-    Subscriber::~Subscriber()
+    DDSSubscriber::~DDSSubscriber()
     {
         if (reader_ != nullptr)
         {
@@ -133,19 +133,19 @@ namespace student
         DomainParticipantFactory::get_instance()->delete_participant(participant_);
     }
 
-    void Subscriber::SubListener::on_subscription_matched(
+    void DDSSubscriber::SubListener::on_subscription_matched(
         DataReader *,
         const SubscriptionMatchedStatus &info)
     {
         if (info.current_count_change == 1)
         {
             matched_ = info.total_count;
-            std::cout << "Subscriber matched." << std::endl;
+            std::cout << "DDSSubscriber matched." << std::endl;
         }
         else if (info.current_count_change == -1)
         {
             matched_ = info.total_count;
-            std::cout << "Subscriber unmatched." << std::endl;
+            std::cout << "DDSSubscriber unmatched." << std::endl;
         }
         else
         {
@@ -154,7 +154,7 @@ namespace student
         }
     }
 
-    void Subscriber::SubListener::on_data_available(
+    void DDSSubscriber::SubListener::on_data_available(
         DataReader *reader)
     {
         SampleInfo info;
@@ -169,16 +169,16 @@ namespace student
         }
     }
 
-    void Subscriber::run()
+    void DDSSubscriber::run()
     {
-        std::cout << "Subscriber running. Please press enter to stop the Subscriber" << std::endl;
+        std::cout << "DDSSubscriber running. Please press enter to stop the DDSSubscriber" << std::endl;
         std::cin.ignore();
     }
 
-    void Subscriber::run(
+    void DDSSubscriber::run(
         uint32_t number)
     {
-        std::cout << "Subscriber running until " << number << "samples have been received" << std::endl;
+        std::cout << "DDSSubscriber running until " << number << "samples have been received" << std::endl;
         while (number > listener_.samples_)
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(500));

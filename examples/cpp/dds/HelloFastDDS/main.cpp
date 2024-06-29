@@ -20,8 +20,8 @@
 #include <limits>
 #include <sstream>
 
-#include "Publisher.h"
-#include "Subscriber.h"
+#include "DDSPublisher.h"
+#include "DDSSubscriber.h"
 
 #include <fastdds/dds/domain/DomainParticipantFactory.hpp>
 #include <fastrtps/log/Log.h>
@@ -29,8 +29,6 @@
 #include <optionparser.hpp>
 
 using eprosima::fastdds::dds::Log;
-
-
 
 int main(int argc, char** argv)
 {
@@ -43,7 +41,7 @@ int main(int argc, char** argv)
     {
         case '1':
         {
-            student::Publisher mypub;
+            learning_dds::DDSPublisher mypub;
             if (mypub.init(false))
             {
                 mypub.run(1000);
@@ -52,7 +50,7 @@ int main(int argc, char** argv)
         }
         case '2':
         {
-            student::Subscriber mysub;
+            learning_dds::DDSSubscriber mysub;
             if (mysub.init(false))
             {
                 mysub.run();

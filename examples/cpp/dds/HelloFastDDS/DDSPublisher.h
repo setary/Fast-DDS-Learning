@@ -13,28 +13,27 @@
 // limitations under the License.
 
 /**
- * @file Publisher.h
+ * @file DDSPublisher.h
  *
  */
 
-#ifndef Publisher_H_
-#define Publisher_H_
+#pragma once
 
-#include "StudentDataPubSubTypes.h"
+#include "TestDataPubSubTypes.h"
 
 #include <fastdds/dds/publisher/DataWriterListener.hpp>
 #include <fastdds/dds/topic/TypeSupport.hpp>
 #include <fastdds/dds/domain/DomainParticipant.hpp>
 
-namespace student {
+namespace learning_dds {
 
-class Publisher
+class DDSPublisher
 {
 public:
 
-    Publisher();
+    DDSPublisher();
 
-    virtual ~Publisher();
+    virtual ~DDSPublisher();
 
     //!Initialize
     bool init(
@@ -49,7 +48,7 @@ public:
 
 private:
 
-    StudentInfo hello_;
+    SimpleInfo hello_;
 
     eprosima::fastdds::dds::DomainParticipant* participant_;
 
@@ -91,8 +90,3 @@ private:
 };
 
 }
-
-
-
-
-#endif /* Publisher_H_ */
