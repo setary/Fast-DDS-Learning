@@ -36,6 +36,7 @@ namespace learning_dds
     DDSPublisher::DDSPublisher()
         : participant_(nullptr), publisher_(nullptr), topic_(nullptr), writer_(nullptr), type_(new SimpleInfoPubSubType())
     {
+        
     }
 
     bool DDSPublisher::init(
@@ -45,7 +46,7 @@ namespace learning_dds
         hello_.name("SimpleInfo");
         DomainParticipantQos pqos = PARTICIPANT_QOS_DEFAULT;
         pqos.name("Participant_pub");
-        auto factory = DomainParticipantFactory::get_instance();
+        DomainParticipantFactory* factory = DomainParticipantFactory::get_instance();
 
         if (use_env)
         {
@@ -106,16 +107,17 @@ namespace learning_dds
             publisher_->get_default_datawriter_qos(wqos);
         }
 
-        writer_ = publisher_->create_datawriter(
-            topic_,
-            wqos,
-            &listener_);
-
-        // writer_ = publisher_->create_datawriter_with_profile(
+        // writer_ = publisher_->create_datawriter(
         //     topic_,
-        //     "datawriter_profile",
+        //     wqos,
         //     &listener_);
 
+        writer_ = publisher_->create_datawriter_with_profile(
+            topic_,
+            "datawriter_profile",
+            &listener_);
+
+        writer_->get_status_changes();
         if (writer_ == nullptr)
         {
             return false;
@@ -161,6 +163,13 @@ namespace learning_dds
             std::cout << info.current_count_change
                       << " is not a valid value for PublicationMatchedStatus current count change" << std::endl;
         }
+    }
+
+    void DDSPublisher::PubListener::on_offered_incompatible_qos(
+        eprosima::fastdds::dds::DataWriter* writer,
+        const eprosima::fastdds::dds::OfferedIncompatibleQosStatus& status)
+    {
+        std::cout << "on_offered_incompatible_qos" << std::endl;
     }
 
     void DDSPublisher::runThread(uint32_t sleep)

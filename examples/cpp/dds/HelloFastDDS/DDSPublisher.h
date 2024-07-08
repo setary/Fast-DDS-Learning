@@ -78,6 +78,10 @@ private:
                 eprosima::fastdds::dds::DataWriter* writer,
                 const eprosima::fastdds::dds::PublicationMatchedStatus& info) override;
 
+        void on_offered_incompatible_qos(
+            eprosima::fastdds::dds::DataWriter* writer,
+            const eprosima::fastdds::dds::OfferedIncompatibleQosStatus& status) override;
+
         int matched_;
 
         bool firstConnected_;

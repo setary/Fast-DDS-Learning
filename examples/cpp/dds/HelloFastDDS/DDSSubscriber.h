@@ -40,6 +40,8 @@ namespace learning_dds
         bool init(
             bool use_env);
 
+        void create_second_subscriber();
+
         //! RUN the subscriber
         void run();
 
@@ -76,6 +78,10 @@ namespace learning_dds
             void on_subscription_matched(
                 eprosima::fastdds::dds::DataReader *reader,
                 const eprosima::fastdds::dds::SubscriptionMatchedStatus &info) override;
+
+            void on_requested_incompatible_qos(
+                eprosima::fastdds::dds::DataReader* reader,
+                const eprosima::fastdds::dds::RequestedIncompatibleQosStatus& status);
 
             // void on_requested_deadline_missed(
             //     eprosima::fastdds::dds::DataReader *reader,

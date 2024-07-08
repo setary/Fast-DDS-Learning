@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dds xmlns="http://www.eprosima.com/XMLSchemas/fastRTPS_Profiles">
+    <profiles>
+        <data_writer profile_name="datawriter_profile">
+            <topic>
+                <historyQos>
+                    <kind>KEEP_LAST</kind>
+                    <depth>20</depth>
+                </historyQos>
+            </topic>
+            <qos>
+                <!-- <historyQos>
+                    <kind>KEEP_LAST_HISTORY_QOS</kind>
+                    <depth>10</depth>
+                </historyQos> -->
+                <reliability>
+                    <kind>BEST_EFFORT</kind>
+                    <max_blocking_time>
+                        <sec>1</sec>
+                    </max_blocking_time>
+                </reliability>
+            </qos>
+        </data_writer>
+
+        <data_reader profile_name="datareader_profile">
+            <qos>
+                <deadline>
+                    <period>
+                        <sec>1</sec>
+                    </period>
+                </deadline>
+                <reliability>
+                    <kind>RELIABLE</kind>
+                    <max_blocking_time>
+                        <sec>1</sec>
+                    </max_blocking_time>
+                </reliability>
+            </qos>
+        </data_reader>
+    </profiles>
+</dds>

@@ -32,6 +32,7 @@ using eprosima::fastdds::dds::Log;
 
 int main(int argc, char** argv)
 {
+    std::cout << "main\n";
     if (argc < 2) {
         std::cout << "please choice 1(pub) or 2(sub)";
         return 0;

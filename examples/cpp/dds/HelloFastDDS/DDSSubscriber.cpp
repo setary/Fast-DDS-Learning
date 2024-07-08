@@ -29,6 +29,8 @@
 #include <fastdds/dds/subscriber/DataReader.hpp>
 #include <fastdds/dds/subscriber/SampleInfo.hpp>
 #include <fastdds/dds/subscriber/qos/DataReaderQos.hpp>
+#include <fastdds/dds/core/condition/WaitSet.hpp>
+
 
 using namespace eprosima::fastdds::dds;
 
@@ -105,15 +107,71 @@ namespace learning_dds
             subscriber_->get_default_datareader_qos(rqos);
         }
 
-        reader_ = subscriber_->create_datareader(topic_, rqos, &listener_);
-        // reader_ = subscriber_->create_datareader_with_profile(topic_, "datareader_profile", &listener_);
+        // reader_ = subscriber_->create_datareader(topic_, rqos, &listener_);
+        reader_ = subscriber_->create_datareader_with_profile(topic_, "datareader_profile", &listener_);
 
         if (reader_ == nullptr)
         {
             return false;
         }
 
+        create_second_subscriber();
+
         return true;
+    }
+
+    void DDSSubscriber::create_second_subscriber()
+    {
+        DataReader* data_reader =
+        subscriber_->create_datareader(topic_, DATAREADER_QOS_DEFAULT);
+        if (nullptr == data_reader)
+        {
+            // Error
+            return;
+        }
+
+        // Prepare a wait-set to wait for data on the DataReader
+        WaitSet wait_set;
+        StatusCondition& condition = data_reader->get_statuscondition();
+        condition.set_enabled_statuses(StatusMask::data_available());
+        wait_set.attach_condition(condition);
+
+        // Create a data and SampleInfo instance
+        SimpleInfo data;
+        SampleInfo info;
+
+        //Define a timeout of 5 seconds
+        eprosima::fastrtps::Duration_t timeout (5, 0);
+
+        while (true)
+        {
+            ConditionSeq active_conditions;
+            if (0 == wait_set.wait(active_conditions, timeout))
+            {
+                while (0 == data_reader->take_next_sample(&data, &info))
+                {
+                    if (info.valid_data)
+                    {
+                        // Do something with the data
+                        std::cout << "Received new data value for topic "
+                                << topic_->get_name()
+                                << std::endl;
+                    }
+                    else
+                    {
+                        // If the remote writer is not alive, we exit the reading loop
+                        std::cout << "Remote writer for topic "
+                                << topic_->get_name()
+                                << " is dead" << std::endl;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                std::cout << "No data this time" << std::endl;
+            }
+        }
     }
 
     DDSSubscriber::~DDSSubscriber()
@@ -167,6 +225,13 @@ namespace learning_dds
                 std::cout << "Message " << hello_.name() << " " << hello_.id() << " RECEIVED" << std::endl;
             }
         }
+    }
+
+    void DDSSubscriber::SubListener::on_requested_incompatible_qos(
+            eprosima::fastdds::dds::DataReader* reader,
+            const eprosima::fastdds::dds::RequestedIncompatibleQosStatus& status)
+    {
+        std::cout << "on_requested_incompatible_qos" << std::endl;
     }
 
     void DDSSubscriber::run()

@@ -54,7 +54,7 @@ bool deadlinepayloadPublisher::init(
 {
     // Create Participant
     DomainParticipantQos pqos;
-    pqos.wire_protocol().builtin.discovery_config.leaseDuration = eprosima::fastrtps::c_TimeInfinite;
+    pqos.wire_protocol().builtin.discovery_config.leaseDuration = eprosima::fastrtps::;
     pqos.name("Participant_publisher");  //You can put here the name you want
 
     mp_participant = DomainParticipantFactory::get_instance()->create_participant(0, pqos);
